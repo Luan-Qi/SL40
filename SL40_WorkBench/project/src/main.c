@@ -26,15 +26,23 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "at32f421_wk_config.h"
+#include "wk_adc.h"
+#include "wk_tmr.h"
+#include "wk_dma.h"
+#include "wk_gpio.h"
 #include "wk_system.h"
 
 /* private includes ----------------------------------------------------------*/
 /* add user code begin private includes */
 
+#include "sl40.h"
+
 /* add user code end private includes */
 
 /* private typedef -----------------------------------------------------------*/
 /* add user code begin private typedef */
+
+uint16_t adc_buff[ADC_BUFF_SIZE];
 
 /* add user code end private typedef */
 
@@ -86,6 +94,16 @@ int main(void)
   /* timebase config. */
   wk_timebase_init();
 
+  /* init dma1 channel1 */
+  wk_dma1_channel1_init();
+  /* config dma channel transfer parameter */
+  /* user need to modify define values DMAx_CHANNELy_XXX_BASE_ADDR and DMAx_CHANNELy_BUFFER_SIZE in at32xxx_wk_config.h */
+  wk_dma_channel_config(DMA1_CHANNEL1, 
+                        (uint32_t)&ADC1->odt, 
+                        DMA1_CHANNEL1_MEMORY_BASE_ADDR, 
+                        DMA1_CHANNEL1_BUFFER_SIZE);
+  dma_channel_enable(DMA1_CHANNEL1, TRUE);
+
   /* init adc1 function. */
   wk_adc1_init();
 
@@ -98,17 +116,28 @@ int main(void)
   /* init tmr3 function. */
   wk_tmr3_init();
 
+  /* init tmr6 function. */
+  wk_tmr6_init();
+
   /* init tmr15 function. */
   wk_tmr15_init();
 
   /* add user code begin 2 */
+	
+	gpio_bits_set(GPIOF, GPIO_PINS_1);
 
   /* add user code end 2 */
 
   while(1)
   {
     /* add user code begin 3 */
-
+		
+		sl40_main();
+		
+//    gpio_bits_set(GPIOF, GPIO_PINS_1);
+//    wk_delay_ms(500);
+//    gpio_bits_reset(GPIOF, GPIO_PINS_1);
+//    wk_delay_ms(500);
     /* add user code end 3 */
   }
 }

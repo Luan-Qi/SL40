@@ -30,6 +30,8 @@
 /* private includes ----------------------------------------------------------*/
 /* add user code begin private includes */
 
+#include "sl40.h"
+
 /* add user code end private includes */
 
 /* private typedef -----------------------------------------------------------*/
@@ -59,6 +61,13 @@
 
 /* private user code ---------------------------------------------------------*/
 /* add user code begin 0 */
+
+uint32_t system_time = 0;
+
+uint32_t millis()
+{
+	return system_time;
+}
 
 /* add user code end 0 */
 
@@ -222,6 +231,26 @@ void SysTick_Handler(void)
 }
 
 /**
+  * @brief  this function handles DMA1 Channel 1 handler.
+  * @param  none
+  * @retval none
+  */
+void DMA1_Channel1_IRQHandler(void)
+{
+  /* add user code begin DMA1_Channel1_IRQ 0 */
+
+  if(dma_flag_get(DMA1_FDT1_FLAG) != RESET)
+  {  
+    dma_flag_clear(DMA1_FDT1_FLAG);
+  }
+
+  /* add user code end DMA1_Channel1_IRQ 0 */
+  /* add user code begin DMA1_Channel1_IRQ 1 */
+
+  /* add user code end DMA1_Channel1_IRQ 1 */
+}
+
+/**
   * @brief  this function handles TMR1 brake overflow trigger and hall handler.
   * @param  none
   * @retval none
@@ -253,6 +282,29 @@ void TMR3_GLOBAL_IRQHandler(void)
   /* add user code begin TMR3_GLOBAL_IRQ 1 */
 
   /* add user code end TMR3_GLOBAL_IRQ 1 */
+}
+
+/**
+  * @brief  this function handles TMR6 handler.
+  * @param  none
+  * @retval none
+  */
+void TMR6_GLOBAL_IRQHandler(void)
+{
+  /* add user code begin TMR6_GLOBAL_IRQ 0 */
+
+  /* add user code end TMR6_GLOBAL_IRQ 0 */
+
+
+  /* add user code begin TMR6_GLOBAL_IRQ 1 */
+	
+	if(tmr_interrupt_flag_get(TMR6, TMR_OVF_FLAG) != RESET)
+  {
+		system_time++;
+		tmr_flag_clear(TMR6, TMR_OVF_FLAG);
+  }
+
+  /* add user code end TMR6_GLOBAL_IRQ 1 */
 }
 
 /**

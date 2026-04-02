@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>AT32F421F8P7,USE_STDPERIPH_DRIVER,AT_START_F421_V1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\..\libraries\drivers\inc;..\..\libraries\cmsis\cm4\core_support;..\..\libraries\cmsis\cm4\device_support;..\inc</IncludePath>
+              <IncludePath>..\..\libraries\drivers\inc;..\..\libraries\cmsis\cm4\core_support;..\..\libraries\cmsis\cm4\device_support;..\inc;..\..\middlewares\sl40</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -403,20 +403,75 @@
               <FileType>1</FileType>
               <FilePath>..\src\wk_system.c</FilePath>
             </File>
+            <File>
+              <FileName>wk_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\wk_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>wk_tmr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\wk_tmr.c</FilePath>
+            </File>
+            <File>
+              <FileName>wk_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\wk_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>wk_dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\wk_dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>sl40.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\middlewares\sl40\sl40.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\button.c</FilePath>
+            </File>
+            <File>
+              <FileName>time32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\time32.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>firmware</GroupName>
           <Files>
             <File>
+              <FileName>at32f421_crm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\libraries\drivers\src\at32f421_crm.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f421_tmr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\libraries\drivers\src\at32f421_tmr.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f421_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\libraries\drivers\src\at32f421_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>at32f421_pwc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\libraries\drivers\src\at32f421_pwc.c</FilePath>
+            </File>
+            <File>
               <FileName>at32f421_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\libraries\drivers\src\at32f421_adc.c</FilePath>
             </File>
             <File>
-              <FileName>at32f421_crm.c</FileName>
+              <FileName>at32f421_dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\libraries\drivers\src\at32f421_crm.c</FilePath>
+              <FilePath>..\..\libraries\drivers\src\at32f421_dma.c</FilePath>
             </File>
             <File>
               <FileName>at32f421_debug.c</FileName>
@@ -429,24 +484,14 @@
               <FilePath>..\..\libraries\drivers\src\at32f421_flash.c</FilePath>
             </File>
             <File>
-              <FileName>at32f421_gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\libraries\drivers\src\at32f421_gpio.c</FilePath>
-            </File>
-            <File>
               <FileName>at32f421_misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\libraries\drivers\src\at32f421_misc.c</FilePath>
             </File>
             <File>
-              <FileName>at32f421_pwc.c</FileName>
+              <FileName>at32f421_scfg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\libraries\drivers\src\at32f421_pwc.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f421_tmr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\libraries\drivers\src\at32f421_tmr.c</FilePath>
+              <FilePath>..\..\libraries\drivers\src\at32f421_scfg.c</FilePath>
             </File>
           </Files>
         </Group>

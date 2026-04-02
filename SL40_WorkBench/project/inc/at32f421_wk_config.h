@@ -43,6 +43,9 @@ extern "C" {
 /* exported types -------------------------------------------------------------*/
 /* add user code begin exported types */
 
+#define ADC_BUFF_SIZE 5
+extern uint16_t adc_buff[ADC_BUFF_SIZE];
+
 /* add user code end exported types */
 
 /* exported constants --------------------------------------------------------*/
@@ -57,8 +60,8 @@ extern "C" {
 
 /* add user code begin dma define */
 /* user can only modify the dma define value */
-//#define DMA1_CHANNEL1_BUFFER_SIZE   0
-//#define DMA1_CHANNEL1_MEMORY_BASE_ADDR   0
+#define DMA1_CHANNEL1_BUFFER_SIZE   ADC_BUFF_SIZE
+#define DMA1_CHANNEL1_MEMORY_BASE_ADDR   (uint32_t)(&adc_buff)
 //#define DMA1_CHANNEL1_PERIPHERAL_BASE_ADDR  0
 
 //#define DMA1_CHANNEL2_BUFFER_SIZE   0
@@ -87,21 +90,6 @@ extern "C" {
 
   /* nvic config. */
   void wk_nvic_config(void);
-
-  /* init gpio function. */
-  void wk_gpio_config(void);
-
-  /* init adc1 function. */
-  void wk_adc1_init(void);
-
-  /* init tmr1 function. */
-  void wk_tmr1_init(void);
-
-  /* init tmr3 function. */
-  void wk_tmr3_init(void);
-
-  /* init tmr15 function. */
-  void wk_tmr15_init(void);
 
 /* add user code begin exported functions */
 
