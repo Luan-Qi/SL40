@@ -50,17 +50,17 @@ void sl40_WW_set(uint16_t new_state)
 
 
 #define ADC_MAX        4095.0f
-#define PWM_MAX        777.0f
+#define PWM_MAX        600.0f
 
 #define DEAD_ZONE      0.0f
 #define FILTER_FAST    0.6f
 #define FILTER_SLOW    0.2f
 
-#define GAMMA          2.2f
-#define CCT_CURVE      1.5f
+#define GAMMA          1.8f
+#define CCT_CURVE      1.0f
 
-#define SMOOTH_STEP    0.2f
-#define MIN_BRIGHT     0.01f
+#define SMOOTH_STEP    0.06f
+#define MIN_BRIGHT     0.00f
 
 // ================= 状态变量 =================
 static float cct_fast = 0;
@@ -188,6 +188,31 @@ void sl40_light_control_advanced(uint16_t cct_adc_in, uint16_t dim_adc_in)
     sl40_WW_set(ww_pwm);
 }
 
+void Control_PWM_Fan_Speed(uint16_t adc_value, uint16_t adc_min, uint16_t adc_max,
+                           uint16_t pwm_min, uint16_t pwm_max)
+{
+    uint16_t pwm_output;
+
+    // 边界处理：ADC值超出范围时，输出对应极值
+    if (adc_value <= adc_min) {
+        pwm_output = pwm_min;
+    } else if (adc_value >= adc_max) {
+        pwm_output = pwm_max;
+    } else {
+        // 线性映射公式：output = pwm_min + (adc_value - adc_min) * (pwm_max - pwm_min) / (adc_max - adc_min)
+        uint32_t delta_adc = adc_value - adc_min;
+        uint32_t range_adc = adc_max - adc_min;   // 确保 adc_max > adc_min
+        uint32_t range_pwm = pwm_max - pwm_min;
+
+        // 使用32位中间变量防止乘法溢出
+        uint32_t temp = delta_adc * range_pwm;
+        pwm_output = pwm_min + (uint16_t)(temp / range_adc);
+    }
+
+    // 设置TMR1通道2的PWM比较值（占空比）
+    tmr_channel_value_set(TMR1, TMR_SELECT_CHANNEL_2, pwm_output);
+}
+
 void sl40_adc_push(void)
 {
 	memcpy(&sl40_adc_data, adc_buff, sizeof(sl40_adc_data));
@@ -228,10 +253,11 @@ void sl40_test_shift(void)
 
 
 #define BATTERY_LOW_THRESHOLD 2480 // 假设电池电压低于3000mV时认为电量低，这个值你可以根据实际情况调整
-#define BLINK_INTERVAL 5 // 20Hz的循环中需要循环20次达到1秒的闪烁间隔
+#define BLINK_INTERVAL 4 // 20Hz的循环中需要循环20次达到1秒的闪烁间隔
 #define INIT_ADC_READS 5 // 开机时进行5次ADC读取
 
-uint32_t sl40_time = 0;
+uint32_t sl40_main_time = 0;
+uint32_t sl40_light_time = 0;
 uint8_t blink_counter = 0; // 用于控制闪烁间隔的计数器
 uint8_t restart_flag = 0;
 uint8_t init_adc_counter = 0; // 用于控制初始化ADC读取次数的计数器
@@ -239,7 +265,7 @@ uint8_t is_initialized = 0; // 开机初始化标志
 
 void sl40_main_run(void)
 {
-	if(millis_overstep(sl40_time)) sl40_time = millis() + 50;
+	if(millis_overstep(sl40_main_time)) sl40_main_time = millis() + 50;
 	else return;
 	
 	sl40_adc_push();
@@ -247,11 +273,11 @@ void sl40_main_run(void)
 	{
 		if (init_adc_counter < INIT_ADC_READS)
 		{
-				init_adc_counter++;
+			init_adc_counter++;
 		}
 		else
 		{
-				is_initialized = 1; // 初始化完成
+			is_initialized = 1; // 初始化完成
 		}
 		return;
 	}
@@ -272,9 +298,17 @@ void sl40_main_run(void)
 		}
 		restart_flag = 1;
 	}
-	else
+	
+	Control_PWM_Fan_Speed(4096 - sl40_adc_data.DIM_value_adc, 0, 4095, 15, 90);
+}
+
+void sl40_light_run(void)
+{
+	if(millis_overstep(sl40_light_time)) sl40_light_time = millis() + 20;
+	else return;
+	
+	if(is_initialized && !restart_flag)
 	{
-		// 电池电压正常，使用ADC读取的值
 		sl40_light_control_advanced(sl40_adc_data.CCT_value_adc, 4096 - sl40_adc_data.DIM_value_adc);
 	}
 }
@@ -283,6 +317,7 @@ void sl40_main_run(void)
 void sl40_main(void)
 {
 	sl40_main_run();
+	sl40_light_run();
 	button_main_run();
 }
 
